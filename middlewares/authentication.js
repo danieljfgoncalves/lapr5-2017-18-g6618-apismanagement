@@ -42,7 +42,7 @@ exports.getAuth0Token = (req, res, next) => {
         body: {
             grant_type: 'client_credentials',
             client_id: self.auth0Client.id,
-            client_secret: self.auth0Client.self,
+            client_secret: self.auth0Client.secret,
             audience: 'https://lapr5-3da.eu.auth0.com/api/v2/'
         },
         json: true
@@ -72,8 +72,8 @@ exports.getMedicinesManagementToken = (req, res, next) => {
         body: 
         {
             grant_type: 'client_credentials',
-            client_id: req.headers.client_id,
-            client_secret: req.headers.client_secret,
+            client_id: self.auth0Client.id,
+            client_secret: self.auth0Client.secret,
             audience:"https://medicines-backend-api/"
         },
         json:true

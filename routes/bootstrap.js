@@ -13,12 +13,15 @@ const roles = require('../middlewares/roles');
 /**
  * Uses authentication middlewares.
  */
-router.use('/', auth.handleToken, roles.requireRoles(['admin']));
+router.use('/', 
+    auth.handleToken, 
+    roles.requireRoles(['admin']),
+    auth.getMedicinesManagementToken);
 
 /**
- * GET /api/bootstrap/generate
+ * POST /api/bootstrap/generate
  */
-router.get('/generate', bootstrapController.generate);
+router.post('/generate', bootstrapController.generate);
 
 
 module.exports = router;
