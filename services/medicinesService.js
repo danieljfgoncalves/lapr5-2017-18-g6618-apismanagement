@@ -5,7 +5,7 @@
 const hosts = require('../configs/hosts');
 const mock = require('../mochups/medicines');
 const rp = require('request-promise');
-const async = require('async');
+const Promise = require('bluebird');
 
 module.exports = {
 
@@ -15,8 +15,9 @@ module.exports = {
     bootstrapMedicines: function(medicinesToken) {
         return new Promise((resolve, reject) => {
 
-            let medicinesRes = [];
-            async.map(mock.medicines, (medicine, callback) => {
+            let medicinesPromises = [];
+            for (let i = 0; i < mock.medicines.length; i++) {
+                let medicine = mock.medicines[i];
                 let options = {
                     url: hosts.medicinesManagement.url.concat("/api/medicines"),
                     method: "POST",
@@ -26,19 +27,20 @@ module.exports = {
                     body: medicine,
                     json: true
                 }
-                rp(options).then(medicineRes => {
-                    medicinesRes.push(medicineRes);
-                    return callback();
-                }).catch(err => {
-                    return callback();
-                });
-            }, err => {
+                medicinesPromises.push(rp(options));
+            }
+            Promise.all(medicinesPromises).then(medicinesRes => {
                 return resolve(medicinesRes);
+            }).catch(err => {
+                return resolve(err);
             });
 
         });
     },
 
+    /**
+     * Bootstraps the drugs data.
+     */
     bootstrapDrugs: function(medicinesToken, medicines) {
         return new Promise((resolve, reject) => {
             
@@ -53,8 +55,9 @@ module.exports = {
                 medicines[5], medicines[6]
             ];
 
-            let drugsRes = [];
-            async.map(mock.drugs, (drug, callback) => {
+            let drugsPromises = [];
+            for (let i = 0; i < mock.drugs.length; i++) {
+                let drug = mock.drugs[i];
                 let options = {
                     url: hosts.medicinesManagement.url.concat("/api/drugs"),
                     method: "POST",
@@ -64,24 +67,26 @@ module.exports = {
                     body: drug,
                     json: true
                 }
-                rp(options).then(drugRes => {
-                    drugsRes.push(drugRes);
-                    return callback();
-                }).catch(err => {
-                    return callback();
-                });
-            }, err => {
+                drugsPromises.push(rp(options));
+            }
+            Promise.all(drugsPromises).then(drugsRes => {
                 return resolve(drugsRes);
+            }).catch(err => {
+                return resolve(err);
             });
 
         });
     },
 
+    /**
+     * Bootstraps the posologies data.
+     */
     bootstrapPosologies: function(medicinesToken) {
         return new Promise((resolve, reject) => {
 
-            let posologiesRes = [];
-            async.map(mock.posologies, (posology, callback) => {
+            let posologiesPromises = [];
+            for (let i = 0; i < mock.posologies.length; i++) {
+                let posology = mock.posologies[i];
                 let options = {
                     url: hosts.medicinesManagement.url.concat("/api/posologies"),
                     method: "POST",
@@ -91,24 +96,26 @@ module.exports = {
                     body: posology,
                     json: true
                 }
-                rp(options).then(posologyRes => {
-                    posologiesRes.push(posologyRes);
-                    return callback();
-                }).catch(err => {
-                    return callback();
-                });
-            }, err => {
+                posologiesPromises.push(rp(options));
+            }
+            Promise.all(posologiesPromises).then(posologiesRes => {
                 return resolve(posologiesRes);
+            }).catch(err => {
+                return resolve(err);
             });
 
         });
     },
 
+    /**
+     * Bootstraps the comments data.
+     */
     bootstrapComments: function(medicinesToken) {
         return new Promise((resolve, reject) => {
 
-            let commentsRes = [];
-            async.map(mock.comments, (comment, callback) => {
+            let commentsPromises = [];
+            for (let i = 0; i < mock.comments.length; i++) {
+                let comment = mock.comments[i];
                 let options = {
                     url: hosts.medicinesManagement.url.concat("/api/comments"),
                     method: "POST",
@@ -118,19 +125,20 @@ module.exports = {
                     body: comment,
                     json: true
                 }
-                rp(options).then(commentRes => {
-                    commentsRes.push(commentRes);
-                    return callback();
-                }).catch(err => {
-                    return callback();
-                });
-            }, err => {
+                commentsPromises.push(rp(options));
+            }
+            Promise.all(commentsPromises).then(commentsRes => {
                 return resolve(commentsRes);
+            }).catch(err => {
+                return resolve(err);
             });
 
         });
     },
 
+    /**
+     * Bootstraps the presentations data.
+     */
     bootstrapPresentations: function(medicinesToken, drugs, posologies, comments) {
         
         return new Promise((resolve, reject) => {
@@ -182,8 +190,9 @@ module.exports = {
                 comments[5]
             ];
 
-            let presentationsRes = [];
-            async.map(mock.presentations, (presentation, callback) => {
+            let presentationsPromises = [];
+            for (let i = 0; i < mock.presentations.length; i++) {
+                let presentation = mock.presentations[i];
                 let options = {
                     url: hosts.medicinesManagement.url.concat("/api/presentations"),
                     method: "POST",
@@ -193,14 +202,12 @@ module.exports = {
                     body: presentation,
                     json: true
                 }
-                rp(options).then(presentationRes => {
-                    presentationsRes.push(presentationRes);
-                    return callback();
-                }).catch(err => {
-                    return callback();
-                });
-            }, err => {
+                presentationsPromises.push(rp(options));
+            }
+            Promise.all(presentationsPromises).then(presentationsRes => {
                 return resolve(presentationsRes);
+            }).catch(err => {
+                return resolve(err);
             });
 
         });

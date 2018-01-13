@@ -3,6 +3,7 @@
  */
 
 const medServ = require('../services/medicinesService');
+const recServ = require('../services/receiptsService');
 
 /**
  * POST /api/bootstrap/generate
@@ -32,6 +33,10 @@ exports.generate = function(req, res) {
     })
     .then(presentations => {
         DTO.presentations = presentations;
+        return recServ.bootstrapReceipts(req.headers.authorization, DTO);
+    })
+    .then(receipts => {
+        DTO.receipts = receipts;
         return res.status(200).json(DTO);
     })
 

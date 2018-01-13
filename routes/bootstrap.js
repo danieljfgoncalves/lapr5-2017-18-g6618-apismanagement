@@ -14,9 +14,9 @@ const roles = require('../middlewares/roles');
  * Uses authentication middlewares.
  */
 router.use('/', 
-    auth.handleToken, 
-    roles.requireRoles(['admin']),
-    auth.getMedicinesManagementToken);
+    auth.handleToken,
+    auth.getMedicinesManagementToken,
+    roles.requireRoles(['admin']));
 
 /**
  * POST /api/bootstrap/generate

@@ -55,7 +55,7 @@ exports.getAuth0Token = (req, res, next) => {
             return res.status(403).send({"Message":"Unauthorized API Client"});
         }
 
-        req.accessToken = body;
+        req.auth0Token = body;
         return next();
     });
 }; 
