@@ -37,7 +37,19 @@ exports.generate = function(req, res) {
     })
     .then(receipts => {
         DTO.receipts = receipts;
-        return res.status(200).json(DTO);
+
+        let resultDTO = {
+            report: {
+                medicinesInserted: DTO.medicines.length,
+                drugsInserted: DTO.drugs.length,
+                posologiesInserted: DTO.posologies.length,
+                commentsInserted: DTO.comments.length,
+                presentationsInserted: DTO.presentations.length,
+                receiptsInserted: DTO.receipts.length
+            },
+            data: DTO
+        }
+        return res.status(200).json(resultDTO);
     })
 
 }
