@@ -1,5 +1,5 @@
 /**
- * medicinesService.js
+ * receiptsService.js
  */
 
 const hosts = require('../configs/hosts');

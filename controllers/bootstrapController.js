@@ -4,7 +4,9 @@
 
 const medServ = require('../services/medicinesService');
 const recServ = require('../services/receiptsService');
-
+const phaServ = require('../services/pharmaciesService');
+const autServ = require('../services/auth0Service');
+const ordServ = require('../services/ordersService');
 /**
  * POST /api/bootstrap/generate
  *
@@ -37,6 +39,22 @@ exports.generate = function(req, res) {
     })
     .then(receipts => {
         DTO.receipts = receipts;
+        return phaServ.bootstrapPharmacies(req.headers.authorization);
+    })
+    .then(pharmacies => {
+        DTO.pharmacies = pharmacies;
+        return autServ.addPharmaciesIdToUsers(req.auth0Token, DTO.pharmacies);
+    })
+    .then(pharmacists => {
+        DTO.pharmacists = pharmacists;
+        return ordServ.bootstrapSupplier(req.headers.authorization);
+    })
+    .then(supplier => {
+        DTO.supplier = supplier;
+        return ordServ.bootstrapOrders(req.headers.authorization, DTO.supplier, DTO.pharmacies);
+    })
+    .then(orders => {
+        DTO.orders = orders;
 
         let resultDTO = {
             report: {
@@ -45,11 +63,15 @@ exports.generate = function(req, res) {
                 posologiesInserted: DTO.posologies.length,
                 commentsInserted: DTO.comments.length,
                 presentationsInserted: DTO.presentations.length,
-                receiptsInserted: DTO.receipts.length
+                receiptsInserted: DTO.receipts.length,
+                pharmaciesInserted: DTO.pharmacies.length,
+                updatedPharmacists: DTO.pharmacists.length,
+                suppliersInserted: DTO.supplier ? 1 : 0,
+                ordersInserted: DTO.orders.length
             },
             data: DTO
         }
         return res.status(200).json(resultDTO);
-    })
+    });
 
 }

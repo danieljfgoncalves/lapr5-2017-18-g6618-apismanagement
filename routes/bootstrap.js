@@ -16,6 +16,7 @@ const roles = require('../middlewares/roles');
 router.use('/', 
     auth.handleToken,
     auth.getMedicinesManagementToken,
+    auth.getAuth0Token,
     roles.requireRoles(['admin']));
 
 /**
