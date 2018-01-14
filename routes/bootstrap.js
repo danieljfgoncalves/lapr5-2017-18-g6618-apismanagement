@@ -15,14 +15,20 @@ const roles = require('../middlewares/roles');
  */
 router.use('/', 
     auth.handleToken,
-    auth.getMedicinesManagementToken,
-    auth.getAuth0Token,
     roles.requireRoles(['admin']));
 
 /**
  * POST /api/bootstrap/generate
  */
-router.post('/generate', bootstrapController.generate);
+router.post('/generate', 
+    auth.getMedicinesManagementToken,
+    auth.getAuth0Token,
+    bootstrapController.generate);
+
+/**
+ * DELETE /api/bootstrap/documents
+ */
+router.delete('/documents', bootstrapController.deleteDocuments);
 
 
 module.exports = router;

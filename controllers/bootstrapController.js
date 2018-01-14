@@ -7,6 +7,8 @@ const recServ = require('../services/receiptsService');
 const phaServ = require('../services/pharmaciesService');
 const autServ = require('../services/auth0Service');
 const ordServ = require('../services/ordersService');
+const dbcServ = require('../services/dbCleanService');
+
 /**
  * POST /api/bootstrap/generate
  *
@@ -15,7 +17,9 @@ const ordServ = require('../services/ordersService');
 exports.generate = function(req, res) {
 
     let DTO = {};
-    medServ.bootstrapMedicines(req.medicinesToken)
+    dbcServ.deleteAllDocuments().then(() => {
+        return medServ.bootstrapMedicines(req.medicinesToken);
+    })
     .then(medicines => {
         DTO.medicines = medicines;
         return medServ.bootstrapDrugs(req.medicinesToken, DTO.medicines);
@@ -74,4 +78,12 @@ exports.generate = function(req, res) {
         return res.status(200).json(resultDTO);
     });
 
+}
+
+exports.deleteDocuments = function(req, res) {
+    dbcServ.deleteAllDocuments().then(()=> {
+        return res.status(200).json({message:"Task executed."});
+    }).catch(() => {
+        return res.status(500).json({message:"Task failed to execute."});
+    })
 }
