@@ -16,27 +16,22 @@ module.exports = {
     bootstrapPharmacies: function(userToken) {
         return new Promise((resolve, reject) => {
 
-            let pharmaciesPromises = [];
-            for (let i = 0; i < mock.pharmacies.length; i++) {
-                let pharmacy = mock.pharmacies[i];
-                let options = {
-                    url: hosts.pharmacyManagement.url.concat("/api/pharmacy"),
-                    method: "POST",
-                    headers: {
-                        "Authorization": userToken,
-                        "client_id": self.auth0Client.id,
-                        "client_secret": self.auth0Client.secret
-                    },
-                    body: pharmacy,
-                    json: true
-                }
-                pharmaciesPromises.push(rp(options));
+            let options = {
+                url: hosts.pharmacyManagement.url.concat("/api/pharmacy/all"),
+                method: "POST",
+                headers: {
+                    "Authorization": userToken,
+                    "client_id": self.auth0Client.id,
+                    "client_secret": self.auth0Client.secret
+                },
+                body: mock.pharmacies,
+                json: true
             }
-            Promise.all(pharmaciesPromises).then(pharmaciesRes => {
+            rp(options).then(pharmaciesRes => {
                 return resolve(pharmaciesRes);
             }).catch(err => {
                 return resolve(err);
-            });
+            })
 
         });
     }
